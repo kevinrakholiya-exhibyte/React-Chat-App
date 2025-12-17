@@ -1,11 +1,13 @@
 import React from 'react'
 import Conversation from './Conversation'
 import Messages from './Messages'
-import { Home, MessageCircle, Search, Settings, Users } from 'lucide-react'
+import { Home, HomeIcon, MessageCircle, Search, Settings, Users } from 'lucide-react'
 import MessageInput from './MessageInput'
 import { Link, Navigate } from 'react-router-dom'
+import { useChat } from '../contextAPI/ChatContext'
 
 const Chat = () => {
+    
     return (
         <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
 
@@ -18,6 +20,10 @@ const Chat = () => {
                 </button>
                 {/* Navigation Icons */}
                 <div className="flex flex-col gap-6">
+                    <div className="p-2 rounded-lg cursor-pointer text-gray-500
+                          hover:text-gray-700 dark:text-gray-400 dark:hover:text-white">
+                        <Link to="/"><HomeIcon className="w-6 h-6" /></Link>
+                    </div>
                     <div className="relative p-2 rounded-lg cursor-pointer
                           bg-blue-50 text-blue-500 dark:bg-gray-700">
                         <MessageCircle className="w-6 h-6" />
@@ -35,7 +41,6 @@ const Chat = () => {
                     <Settings className="w-6 h-6" />
                 </div>
             </div>
-
             {/* Chat List */}
             <div className="hidden md:flex w-80 flex-col bg-gray-50 dark:bg-gray-800 border-r dark:border-gray-700">
                 <h1 className="px-4 py-4 text-xl font-bold text-gray-700 dark:text-gray-200">
@@ -49,7 +54,6 @@ const Chat = () => {
                     <Conversation />
                 </div>
             </div>
-
             {/* Chat Messages */}
             <div className="flex-1 flex flex-col bg-white dark:bg-gray-900">
                 {/* Messages */}

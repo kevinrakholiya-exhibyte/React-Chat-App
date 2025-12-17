@@ -7,7 +7,7 @@ export const ChatProvider = ({ children }) => {
     const [users, setUsers] = useState([]);
     const [message, setMessage] = useState([]);
     const [activeChat, setActiveChat] = useState(null)
-
+    const [isTyping, setIsTyping] = useState(false)
 
     // Load Message from IndexedDB on app render
     const loadMessages = async () => {
@@ -33,7 +33,6 @@ export const ChatProvider = ({ children }) => {
         loadUsers();
     }, [activeChat]);
 
-
     const addMessage = async (text) => {
         const newMessage = {
             chatId: activeChat,
@@ -55,7 +54,7 @@ export const ChatProvider = ({ children }) => {
     };
 
     return (
-        <ChatContext.Provider value={{ users, setUsers, message, activeChat, setActiveChat, addMessage, addUser }}>
+        <ChatContext.Provider value={{ users, setUsers, message, activeChat, setActiveChat, addMessage, addUser, isTyping, setIsTyping}}>
             {children}
         </ChatContext.Provider>
     )
