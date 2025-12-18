@@ -1,13 +1,22 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Conversation from './Conversation'
 import Messages from './Messages'
-import { Home, HomeIcon, MessageCircle, Search, Settings, Users } from 'lucide-react'
+import { Home, HomeIcon, MessageCircle, Settings, Users } from 'lucide-react'
 import MessageInput from './MessageInput'
 import { Link, Navigate } from 'react-router-dom'
-import { useChat } from '../contextAPI/ChatContext'
+import LoadingSkeleton from './LoadingSkeleton'
 
 const Chat = () => {
-    
+
+    const [loading, setLoading] = useState(true)
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setLoading(false)
+        }, 1500)
+
+        return () => clearTimeout(timer)
+    }, [])
+
     return (
         <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
 
@@ -15,7 +24,7 @@ const Chat = () => {
             <div className="w-20 flex flex-col items-center justify-between py-6
                       bg-white dark:bg-gray-800 border-r dark:border-gray-700">
                 {/* App Icon */}
-                <button onClick={() => Navigate("/chats")}>
+                <button>
                     <MessageCircle className="w-6 h-6 text-gray-600 dark:text-gray-300" />
                 </button>
                 {/* Navigation Icons */}
@@ -41,30 +50,44 @@ const Chat = () => {
                     <Settings className="w-6 h-6" />
                 </div>
             </div>
-            {/* Chat List */}
-            <div className="hidden md:flex w-80 flex-col bg-gray-50 dark:bg-gray-800 border-r dark:border-gray-700">
-                <h1 className="px-4 py-4 text-xl font-bold text-gray-700 dark:text-gray-200">
-                    Chat App
-                </h1>
-                <p className="px-4 py-2 text-sm font-semibold text-gray-500 dark:text-gray-400">
-                    Recent
-                </p>
-                {/* Conversation List */}
-                <div className="flex-1 overflow-y-auto px-2 space-y-1">
-                    <Conversation />
+            {loading ? (
+                <div className="flex h-screen w-full items-center justify-center">
+                    <LoadingSkeleton />
                 </div>
-            </div>
-            {/* Chat Messages */}
-            <div className="flex-1 flex flex-col bg-white dark:bg-gray-900">
-                {/* Messages */}
-                <div className="flex-1 overflow-y-auto p-3">
-                    <Messages />
-                </div>
-                {/* Message Input */}
-                <div className="border-t dark:border-gray-700">
-                    <MessageInput />
-                </div>
-            </div>
+            ) : (
+                <>
+                    {/* Chat List */}
+                    <div className="hidden md:flex w-80 flex-col bg-gray-50 dark:bg-gray-800 border-r dark:border-gray-700">
+
+                        <h1 className="px-4 py-4 text-xl font-bold text-gray-700 dark:text-gray-200">
+                            Chat App
+                        </h1>
+                        
+                        <p className="px-4 py-2 text-sm font-semibold text-gray-500 dark:text-gray-400">
+                            Recent
+                        </p>
+
+                        {/* Conversation List */}
+                        <div className="flex-1 overflow-y-auto px-2 space-y-1">
+                            <Conversation />
+                        </div>
+                    </div>
+
+                    {/* Chat Messages */}
+                    <div className="flex-1 flex flex-col bg-white dark:bg-gray-900">
+                        {/* Messages */}
+                        <div className="flex-1 overflow-y-auto p-3">
+                            <Messages />
+                        </div>
+
+                        {/* Message Input */}
+                        <div className="border-t dark:border-gray-700">
+                            <MessageInput />
+                        </div>
+                    </div>
+                </>
+            )}
+
         </div>
 
     )

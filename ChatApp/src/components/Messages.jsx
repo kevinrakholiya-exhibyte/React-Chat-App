@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { useChat } from '../contextAPI/ChatContext';
+import { Check } from 'lucide-react';
 
 const Messages = () => {
 
@@ -65,7 +66,10 @@ const Messages = () => {
                               ${msg.sender === "me" ? "bg-purple-600 text-white rounded-br-none" : "bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-bl-none"}`}>
                                 {msg.text}
                                 <div className="text-[10px] text-right opacity-70 mt-1">
-                                    {formatTime(msg.time)}
+                                    <span>{formatTime(msg.time)}</span>
+                                    {msg.sender === "me" && msg.status === "sent" && (
+                                        <Check size={14} />
+                                    )}
                                 </div>
                             </div>
                         </div>

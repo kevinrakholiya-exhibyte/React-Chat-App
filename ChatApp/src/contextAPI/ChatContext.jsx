@@ -12,7 +12,11 @@ export const ChatProvider = ({ children }) => {
     // Load Message from IndexedDB on app render
     const loadMessages = async () => {
         const data = await getMessagesFromDB();
-        setMessage(Array.isArray(data) ? data : []);
+        const messages = data.map((msg) => ({
+            ...msg,
+            status: msg.status || "sent",
+        }));
+        setMessage(messages);
     };
     // Load Users from IndexedDB on app render
     const loadUsers = async () => {
@@ -39,6 +43,7 @@ export const ChatProvider = ({ children }) => {
             text,
             sender: "me",
             time: Date.now(),
+            status: "sent"
         };
         await addMessageToDB(newMessage);
         setMessage((prev) => [...prev, newMessage]);
@@ -54,7 +59,7 @@ export const ChatProvider = ({ children }) => {
     };
 
     return (
-        <ChatContext.Provider value={{ users, setUsers, message, activeChat, setActiveChat, addMessage, addUser, isTyping, setIsTyping}}>
+        <ChatContext.Provider value={{ users, setUsers, message, activeChat, setActiveChat, addMessage, addUser, isTyping, setIsTyping }}>
             {children}
         </ChatContext.Provider>
     )
