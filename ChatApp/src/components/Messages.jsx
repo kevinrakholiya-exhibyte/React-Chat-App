@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from 'react'
-import { ArrowLeft, MoreVertical } from "lucide-react";
 import { useChat } from '../contextAPI/ChatContext';
 
-function Messages() {
+const Messages = () => {
 
-    const { message, activeChat, users } = useChat();
+    const { message, activeChat, users, isTyping } = useChat();
     console.log(message);
 
     const bottomRef = useRef(null);
@@ -25,8 +24,6 @@ function Messages() {
     const activeUser = users.find(
         user => Number(user.id) === Number(activeChat)
     );
-
-
 
     return (
 
@@ -51,6 +48,11 @@ function Messages() {
                         <span className="text-xs text-white/80">{activeUser ? "Online" : ""}</span>
                     </div>
                 </div>
+                {activeChat && isTyping && (
+                    <div className="px-4 py-1 text-sm text-gray-400 italic animate-pulse">
+                        Typing...
+                    </div>
+                )}
             </div>
 
             {/* MESSAGE LIST */}
