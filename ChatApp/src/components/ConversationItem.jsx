@@ -1,21 +1,28 @@
 import React from 'react'
 import { useChat } from '../contextAPI/ChatContext';
+import { Search } from 'lucide-react';
 
 const ConversationItem = ({ active, name, avatar, onClick, message, time }) => {
     const formatTime = (timestamp) => {
-        if (!timestamp) return "New";
+        if (!timestamp) return "";
         const date = new Date(timestamp);
-        if (isNaN(date.getTime())) return "New";
-        return date.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-        });
+        const now = new Date();
+        const isToday =
+            date.toDateString() === now.toDateString();
+        if (isToday) {
+            return date.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+            });
+        }
+        return date.toLocaleDateString();
     };
     return (
         <div
             onClick={onClick}
             className={`flex items-center gap-3 p-3 mx-2 my-1 rounded-xl cursor-pointer transition-all duration-200
         ${active ? "bg-gray-200 dark:bg-gray-600" : "bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"}`}>
+            
             {/* Avatar */}
             <img
                 src={
@@ -24,15 +31,16 @@ const ConversationItem = ({ active, name, avatar, onClick, message, time }) => {
                 }
                 alt={name}
                 className="w-10 h-10 rounded-full object-cover" />
+                
             {/* Content */}
             <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-center">
+                    
                     <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">
                         {name}
                     </h4>
                     <div className="text-xs text-gray-400 dark:text-gray-300">{time ? formatTime(time) : ""}</div>
                 </div>
-                
                 <div className="text-sm text-gray-500 dark:text-gray-400  w-40 truncate">
                     {message}
                 </div>
