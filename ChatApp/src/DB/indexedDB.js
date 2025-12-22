@@ -27,7 +27,15 @@ export const openDB = () => {
 export const addMessageToDB = async (message) => {
     const db = await openDB();
     const transaction = db.transaction(MESSAGE_STORE, "readwrite");
-    transaction.objectStore(MESSAGE_STORE).add(message);
+    const store = transaction.objectStore(MESSAGE_STORE);
+
+    return new Promise((resolve, reject) => {
+        const request = store.add(message);
+        request.onsuccess = () => {
+            resolve({ ...message, id: request.result });
+        };
+        request.onerror = () => reject(request.error);
+    });
 }
 
 
@@ -63,26 +71,47 @@ export const getUsersFromDB = async () => {
 }
 
 // Update UserProfile
-export const updateUserProfile = async (updatedUser) => {
+export const updateUserProfile = async (id, data) => {
     const db = await openDB()
     const transaction = db.transaction(USER_STORE, "readwrite")
     const store = transaction.objectStore(USER_STORE);
     return new Promise((resolve, reject) => {
-        const request = store.put(updatedUser);
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
+        const getRequest = store.get(id)
+
+        getRequest.onsuccess = () => {
+            const user = getRequest.result;
+            if (!user) {
+                reject("User Not found")
+                return
+            }
+            const updatedUser = { ...user, ...data }
+            const request = store.put(updatedUser)
+            request.onsuccess = () => resolve(updatedUser)
+            request.onerror = () => reject(request.error)
+        }
     })
 }
 
 // Update Message 
-export const updateMessageInDB = async (updatedMessage) => {
+export const updateMessageInDB = async (id, newText) => {
     const db = await openDB()
     const transaction = db.transaction(MESSAGE_STORE, "readwrite");
     const store = transaction.objectStore(MESSAGE_STORE);
+
     return new Promise((resolve, reject) => {
-        const request = store.put(updatedMessage)
-        request.onsuccess = () => resolve(request.result)
-        request.onerror = () => reject(request.error)
+        const request = store.get(id);
+
+        request.onsuccess = () => {
+            const message = request.result
+            if (!message) {
+                reject("Message not found")
+                return
+            }
+            message.text = newText
+            message.edited = true
+            store.put(message)
+        }
+        transaction.oncomplete = () => resolve(true);
     })
 }
 

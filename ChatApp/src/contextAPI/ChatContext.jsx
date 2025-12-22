@@ -9,9 +9,6 @@ export const ChatProvider = ({ children }) => {
     const [message, setMessage] = useState([]);
     const [activeChat, setActiveChat] = useState(null)
     const [isTyping, setIsTyping] = useState(false)
-    const [editState, dispatch] = useReducer(chatReducer, {
-        message: []
-    })
 
     // Load Message from IndexedDB on app render
     const loadMessages = async () => {
@@ -49,8 +46,8 @@ export const ChatProvider = ({ children }) => {
             time: Date.now(),
             status: "sent"
         };
-        await addMessageToDB(newMessage);
-        setMessage((prev) => [...prev, newMessage]);
+        const savedMessage = await addMessageToDB(newMessage);
+        setMessage((prev) => [...prev, savedMessage]);
     };
 
     const addUser = async (user) => {
@@ -62,33 +59,34 @@ export const ChatProvider = ({ children }) => {
         });
     };
 
-    // edit Message
-    const editMessage = async (id, newText) => {
-        dispatch({
-            type: "EDIT_MESSAGE",
-            payload: { id, text: newText }
-        })
+    //update user
+    const updateUser = async (id, data) => {
+        await updateUserProfile(id, data)
 
-        setMessage(prev =>
-            prev.map(msg =>
-                msg.id === id ? { ...msg, text: newText, edited: true } : msg
+        setUsers(prevUser =>
+            prevUser.map(user =>
+                user.id === id ? { ...user, ...data } : user
             )
         )
-        await updateMessageInDB({ id, text: newText })
+
+    }
+
+    // edit Message
+    const editMessage = async (id, newText) => {
+        setMessage(prev =>
+            prev.map(msg => msg.id === id ? { ...msg, text: newText, edited: true } : msg)
+        );
+        await updateMessageInDB(id, newText);
     }
 
     // delete Message
     const deleteMessage = async (id) => {
-        dispatch({
-            type: "DELETE_MESSAGE",
-            payload: id
-        })
-        setMessage(prev => prev.filter(msg => msg.id !== id))
         await deleteMessageFromDB(id)
+        setMessage(prev => prev.filter(msg => msg.id !== id))
     }
 
     return (
-        <ChatContext.Provider value={{ users, setUsers, message, activeChat, setActiveChat, addMessage, addUser, isTyping, setIsTyping, editMessage, deleteMessage }}>
+        <ChatContext.Provider value={{ users, setUsers, message, activeChat, setActiveChat, addMessage, addUser, isTyping, setIsTyping, editMessage, deleteMessage, updateUser }}>
             {children}
         </ChatContext.Provider>
     )

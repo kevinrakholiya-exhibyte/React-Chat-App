@@ -1,5 +1,6 @@
 export const initialState = {
     message: [],
+    users: []
 }
 
 const chatReducer = (state, action) => {
@@ -17,6 +18,11 @@ const chatReducer = (state, action) => {
                 message: state.message.filter(
                     msg => msg.id !== action.payload
                 )
+            }
+        case "UPDATE_USER":
+            return {
+                ...state,
+                users: state.users.map(user => user.id === action.payload.id ? { ...user, ...action.payload.data } : user)
             }
         default:
             return state
