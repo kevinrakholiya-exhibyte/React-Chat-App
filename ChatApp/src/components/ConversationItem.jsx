@@ -26,7 +26,6 @@ const ConversationItem = ({ active, name, avatar, onClick, message, time, userId
             onClick={onClick}
             className={`flex items-center gap-3 p-3 mx-2 my-1 rounded-xl cursor-pointer transition-all duration-200
         ${active ? "bg-gray-200 dark:bg-gray-600" : "bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"}`}>
-
             {/* Avatar */}
             <img
                 src={

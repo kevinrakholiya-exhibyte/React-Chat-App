@@ -9,6 +9,9 @@ export const ChatProvider = ({ children }) => {
     const [message, setMessage] = useState([]);
     const [activeChat, setActiveChat] = useState(null)
     const [isTyping, setIsTyping] = useState(false)
+    const [editState, dispatch] = useReducer(chatReducer, {
+        message: []
+    })
 
     // Load Message from IndexedDB on app render
     const loadMessages = async () => {
