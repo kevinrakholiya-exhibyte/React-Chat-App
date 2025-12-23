@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { useChat } from '../contextAPI/ChatContext';
 import { Check, Delete, Pencil, Trash2, TrashIcon } from 'lucide-react';
 
-const Messages = () => {
+const Messages = ({ searchText }) => {
 
     const { message, activeChat, users, isTyping, editMessage, deleteMessage } = useChat();
 
@@ -37,6 +37,13 @@ const Messages = () => {
         }
     }
 
+    const filteredMessages = message.filter((msg) => {
+        if (msg.chatId !== activeChat) return false;
+        if (!searchText.trim()) return true
+        return msg.text.toLowerCase().includes(searchText.toLowerCase())
+    })
+
+
     return (
 
         <div className="flex flex-col h-full bg-gray-100 dark:bg-gray-900">
@@ -67,7 +74,7 @@ const Messages = () => {
 
             {/* MESSAGE LIST */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
-                {message
+                {filteredMessages
                     .filter((msg) => msg.chatId === activeChat)
                     .map((msg, id) => (
                         <div key={id} className={`flex group ${msg.sender === "me" ? "justify-end" : "justify-start"}`}>

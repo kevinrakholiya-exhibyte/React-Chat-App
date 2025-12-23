@@ -9,6 +9,7 @@ import LoadingSkeleton from './LoadingSkeleton'
 const Chat = () => {
 
     const [loading, setLoading] = useState(true)
+    const [searchText, setSearchText] = useState("")
     useEffect(() => {
         const timer = setTimeout(() => {
             setLoading(false)
@@ -62,7 +63,7 @@ const Chat = () => {
                         <h1 className="px-4 py-4 text-xl font-bold text-gray-700 dark:text-gray-200">
                             Chat App
                         </h1>
-                        
+
                         <p className="px-4 py-2 text-sm font-semibold text-gray-500 dark:text-gray-400">
                             Recent
                         </p>
@@ -75,9 +76,19 @@ const Chat = () => {
 
                     {/* Chat Messages */}
                     <div className="flex-1 flex flex-col bg-white dark:bg-gray-900">
+                        {/* Search Input For Messages */}
+                        <div className="p-3 border-b dark:border-gray-700">
+                            <input
+                                type="text"
+                                value={searchText}
+                                onChange={(e) => setSearchText(e.target.value)}
+                                placeholder="Search messages..."
+                                className="w-full px-3 py-2 rounded-lg text-sm bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white outline-none" />
+                        </div>
+
                         {/* Messages */}
                         <div className="flex-1 overflow-y-auto p-3">
-                            <Messages />
+                            <Messages searchText={searchText} />
                         </div>
 
                         {/* Message Input */}

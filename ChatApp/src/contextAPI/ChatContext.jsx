@@ -27,19 +27,19 @@ export const ChatProvider = ({ children }) => {
         const data = await getUsersFromDB();
         setUsers(Array.isArray(data) ? data : []);
     };
+    // Persist activeChat whenever it changes
+    if (activeChat !== null) {
+        localStorage.setItem("activeChat", activeChat);
+    }
+    // Load saved active chat on first render
+    const savedChat = localStorage.getItem("activeChat");
+    if (savedChat && activeChat === null) {
+        setActiveChat(Number(savedChat));
+    }
     useEffect(() => {
-        // Persist activeChat whenever it changes
-        if (activeChat !== null) {
-            localStorage.setItem("activeChat", activeChat);
-        }
-        // Load saved active chat on first render
-        const savedChat = localStorage.getItem("activeChat");
-        if (savedChat && activeChat === null) {
-            setActiveChat(Number(savedChat));
-        }
         loadMessages();
         loadUsers();
-    }, [activeChat]);
+    }, []);
 
     const addMessage = async (text) => {
         const newMessage = {
