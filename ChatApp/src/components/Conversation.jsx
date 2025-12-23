@@ -35,6 +35,7 @@ const Conversation = () => {
                     <ConversationItem
                         key={user.id}
                         name={user.name}
+                        userId={user.id}
                         avatar={user.avatar}
                         message={lastMessage?.text || "No messages yet"}
                         time={lastMessage?.time || ""}
