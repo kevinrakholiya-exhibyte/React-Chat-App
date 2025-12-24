@@ -1,14 +1,17 @@
 import React, { useRef, useState } from 'react'
 import { useChat } from '../contextAPI/ChatContext';
+import WithActiveChat from '../hoc/WithActiveChat';
 
-const MessageInput = () => {
+const MessageInput = ({ isChatActive }) => {
     const [text, setText] = useState("");
     const { addMessage, setIsTyping } = useChat();
     const typingTimeoutRef = useRef(null);
 
-    const isDisabled = !text.trim();
+    const isDisabled = !isChatActive || !text.trim();
+    console.log("isChatActive:", isChatActive);
 
     const handleChange = (e) => {
+        if (!isChatActive) return;
         const value = e.target.value
         setText(value)
         setIsTyping(true)
@@ -35,10 +38,19 @@ const MessageInput = () => {
             <input
                 value={text}
                 onChange={handleChange}
-                placeholder="Type a message..."
-                className="flex-1 p-2 rounded-lg bg-gray-800 text-white outline-none"
+                disabled={!isChatActive}
+                placeholder={
+                    isChatActive
+                        ? "Type a message..."
+                        : "Select a chat to start messaging"}
+                className={`flex-1 p-2 rounded-lg outline-none
+                  ${isChatActive
+                        ? "bg-gray-800 text-white"
+                        : "bg-gray-700 cursor-not-allowed text-gray-400"}`}
                 onKeyDown={(e) => {
-                    if (e.key === "Enter") sendMessage();
+                    if (e.key === "Enter" && isChatActive) {
+                        sendMessage();
+                    }
                 }} />
             <button
                 onClick={sendMessage}
@@ -53,4 +65,4 @@ const MessageInput = () => {
 };
 
 
-export default MessageInput
+export default WithActiveChat(MessageInput)
