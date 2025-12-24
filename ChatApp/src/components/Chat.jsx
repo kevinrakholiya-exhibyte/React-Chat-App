@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import Conversation from './Conversation'
 import Messages from './Messages'
-import { Home, HomeIcon, MessageCircle, Settings, Users } from 'lucide-react'
+import { Home, HomeIcon, MessageCircle, Search, Settings, Users } from 'lucide-react'
 import MessageInput from './MessageInput'
 import { Link, Navigate } from 'react-router-dom'
 import LoadingSkeleton from './LoadingSkeleton'
+import { useChat } from '../contextAPI/ChatContext'
 
 const Chat = () => {
 
     const [loading, setLoading] = useState(true)
     const [searchText, setSearchText] = useState("")
+    const { activeChat } = useChat()
     useEffect(() => {
         const timer = setTimeout(() => {
             setLoading(false)
@@ -41,7 +43,7 @@ const Chat = () => {
                     </div>
                     <div className="p-2 rounded-lg cursor-pointer text-gray-500
                           hover:text-gray-700 dark:text-gray-400 dark:hover:text-white">
-                        <Link to="/User"><Users className="w-6 h-6" /></Link>
+                        <Link to="/user"><Users className="w-6 h-6" /></Link>
                     </div>
                 </div>
 
@@ -77,14 +79,27 @@ const Chat = () => {
                     {/* Chat Messages */}
                     <div className="flex-1 flex flex-col bg-white dark:bg-gray-900">
                         {/* Search Input For Messages */}
-                        <div className="p-3 border-b dark:border-gray-700">
-                            <input
-                                type="text"
-                                value={searchText}
-                                onChange={(e) => setSearchText(e.target.value)}
-                                placeholder="Search messages..."
-                                className="w-full px-3 py-2 rounded-lg text-sm bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white outline-none" />
-                        </div>
+                        {activeChat && (
+                            <div className="px-4 py-2 bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-700">
+                                <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-gray-100 dark:bg-gray-800">
+                                    <Search className="w-4 h-4 text-gray-500" />
+                                    <input
+                                        type="text"
+                                        value={searchText}
+                                        onChange={(e) => setSearchText(e.target.value)}
+                                        placeholder="Search messages"
+                                        className="flex-1 bg-transparent text-sm text-gray-800 dark:text-white outline-none"/>
+
+                                    {searchText && (
+                                        <button
+                                            onClick={() => setSearchText("")}
+                                            className="text-gray-400 hover:text-gray-600">
+                                            ✕
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        )}
 
                         {/* Messages */}
                         <div className="flex-1 overflow-y-auto p-3">
