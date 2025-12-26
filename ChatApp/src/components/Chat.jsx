@@ -21,7 +21,7 @@ const Chat = () => {
     }, [])
 
     return (
-        <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
+        <div className="flex h-screen bg-white dark:bg-slate-900 text-black dark:text-white">
 
             {/* Icons SideBar */}
             <div className="w-20 flex flex-col items-center justify-between py-6
@@ -50,7 +50,7 @@ const Chat = () => {
                 {/* Settings */}
                 <div className="p-2 rounded-lg cursor-pointer text-gray-500
                         hover:text-gray-700 dark:text-gray-400 dark:hover:text-white">
-                    <Settings className="w-6 h-6" />
+                    <Link to="/setting"><Settings className="w-6 h-6" /></Link>
                 </div>
             </div>
             {loading ? (
@@ -88,7 +88,7 @@ const Chat = () => {
                                         value={searchText}
                                         onChange={(e) => setSearchText(e.target.value)}
                                         placeholder="Search messages"
-                                        className="flex-1 bg-transparent text-sm text-gray-800 dark:text-white outline-none"/>
+                                        className="flex-1 bg-transparent text-sm text-gray-800 dark:text-white outline-none" />
 
                                     {searchText && (
                                         <button
