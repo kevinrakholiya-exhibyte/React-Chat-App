@@ -34,7 +34,7 @@ const MessageInput = ({ isChatActive }) => {
     };
 
     return (
-        <div className="flex gap-2 p-2 bg-gray-900">
+        <div className="flex gap-2 p-2 bg-gray-100 dark:bg-gray-900">
             <input
                 value={text}
                 onChange={handleChange}
@@ -44,9 +44,10 @@ const MessageInput = ({ isChatActive }) => {
                         ? "Type a message..."
                         : "Select a chat to start messaging"}
                 className={`flex-1 p-2 rounded-lg outline-none
-                  ${isChatActive
-                        ? "bg-gray-800 text-white"
-                        : "bg-gray-700 cursor-not-allowed text-gray-400"}`}
+      ${isChatActive
+                        ? "bg-white text-gray-900 dark:bg-gray-800 dark:text-white"
+                        : "bg-gray-200 text-gray-400 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400"
+                    }`}
                 onKeyDown={(e) => {
                     if (e.key === "Enter" && isChatActive) {
                         sendMessage();
@@ -55,9 +56,11 @@ const MessageInput = ({ isChatActive }) => {
             <button
                 onClick={sendMessage}
                 disabled={isDisabled}
-                className={`px-4 rounded-lg transition
-          ${isDisabled ? "bg-gray-600 cursor-not-allowed"
-                        : "bg-blue-500 hover:bg-blue-600"} text-white`}>
+                className={`px-4 rounded-lg transition text-white
+      ${isDisabled
+                        ? "bg-gray-400 cursor-not-allowed dark:bg-gray-600"
+                        : "bg-blue-500 hover:bg-blue-600 dark:bg-blue-500 dark:hover:bg-blue-600"
+                    }`}>
                 Send
             </button>
         </div>

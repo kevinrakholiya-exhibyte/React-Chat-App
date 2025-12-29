@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom'
 
 const Home = () => {
     return (
-        <div className="min-h-screen bg-gray-900 ">
+        <div className="min-h-screen bg-white dark:bg-gray-900">
             <main>
                 <section className="max-w-7x mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
                     <div className="text-center space-y-8">
-                        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight">
+                        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-white leading-tight">
                             Connect with anyone,
                             <br />
                             <span className="bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
