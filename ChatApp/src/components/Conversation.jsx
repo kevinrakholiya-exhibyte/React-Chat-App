@@ -8,9 +8,11 @@ const Conversation = () => {
     const { users, message, activeChat, setActiveChat } = useChat();
     const [search, setSearch] = useState("")
 
-    const filteredUsers = users.filter((user) => {
-        return user.name.toLowerCase().includes(search.toLowerCase())
-    })
+    const filteredUsers = [...users]
+        .filter((user) => {
+            return user.name.toLowerCase().includes(search.toLowerCase())
+        })
+        .sort((a, b) => b.isPinned - a.isPinned)
 
     return (
         <div className="p-1">
@@ -41,6 +43,7 @@ const Conversation = () => {
                         time={lastMessage?.time || ""}
                         active={activeChat === user.id}
                         onClick={() => setActiveChat(user.id)}
+                        isPinned={user.isPinned}
                     />
                 );
             })}
