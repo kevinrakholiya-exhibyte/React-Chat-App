@@ -18,11 +18,24 @@ const AddUser = () => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
+    const validateForm = () => {
+        if (!form.name.trim()) {
+            return "Name is required";
+        }
+        if (form.email && !/\S+@\S+\.\S+/.test(form.email)) {
+            return "Please enter a valid email";
+        }
+        return null;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!form.name.trim()) return;
-
+        const validationError = validateForm();
+        if (validationError) {
+            setError(validationError);
+            return;
+        }
         const newUser = {
             id: form.id,
             name: form.name,
@@ -30,9 +43,16 @@ const AddUser = () => {
             avatar: form.avatar || "https://cdn.vectorstock.com/i/1000v/66/13/default-avatar-profile-icon-social-media-user-vector-49816613.jpg",
             online: true,
         };
-
-        await addUser(newUser);
-        navigate("/chats");
+        try {
+            setLoading(true);
+            await addUser(newUser);
+            navigate("/chats");
+        } catch (err) {
+            console.error("Failed to add user:", err);
+            setError("Something went wrong. Please try again.");
+        } finally {
+            setLoading(false);
+        }
     };
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 p-4">

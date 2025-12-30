@@ -15,17 +15,27 @@ export const ChatProvider = ({ children }) => {
 
     // Load Message from IndexedDB on app render
     const loadMessages = async () => {
-        const data = await getMessagesFromDB();
-        const messages = data.map((msg) => ({
-            ...msg,
-            status: msg.status || "sent",
-        }));
-        setMessage(messages);
+        try {
+            const data = await getMessagesFromDB();
+            const messages = data.map((msg) => ({
+                ...msg,
+                status: msg.status || "sent",
+            }));
+            setMessage(messages);
+        } catch (error) {
+            console.error("Failed to load messages:", error);
+            setMessage([]);
+        }
     };
     // Load Users from IndexedDB on app render
     const loadUsers = async () => {
-        const data = await getUsersFromDB();
-        setUsers(Array.isArray(data) ? data : []);
+        try {
+            const data = await getUsersFromDB();
+            setUsers(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.error("Failed to load users:", error);
+            setUsers([]);
+        }
     };
     // Persist activeChat whenever it changes
     if (activeChat !== null) {
@@ -40,6 +50,7 @@ export const ChatProvider = ({ children }) => {
         loadMessages();
         loadUsers();
     }, []);
+
     // add Message
     const addMessage = async (text) => {
         const newMessage = {
@@ -54,16 +65,20 @@ export const ChatProvider = ({ children }) => {
     };
     // add User
     const addUser = async (user) => {
-        const newUser = {
-            ...user,
-            isPinned: false
+        try {
+            const newUser = {
+                ...user,
+                isPinned: false
+            }
+            await addUsersToDB(newUser);
+            setUsers((prev) => {
+                const updatedUsers = [...prev, newUser];
+                setActiveChat(newUser.id);
+                return updatedUsers;
+            });
+        } catch (error) {
+            console.error("Failed to add user:", error);
         }
-        await addUsersToDB(newUser);
-        setUsers((prev) => {
-            const updatedUsers = [...prev, newUser];
-            setActiveChat(newUser.id);
-            return updatedUsers;
-        });
     };
 
     //update user
@@ -80,26 +95,43 @@ export const ChatProvider = ({ children }) => {
 
     // edit Message
     const editMessage = async (id, newText) => {
-        setMessage(prev =>
-            prev.map(msg => msg.id === id ? { ...msg, text: newText, edited: true } : msg)
-        );
-        await updateMessageInDB(id, newText);
+        try {
+            setMessage((prev) =>
+                prev.map((msg) =>
+                    msg.id === id ? { ...msg, text: newText, edited: true } : msg
+                )
+            );
+            const success = await updateMessageInDB(id, newText);
+            if (!success) throw new Error("Edit failed");
+        } catch (error) {
+            console.error("Failed to edit message:", error);
+        }
     }
 
     // delete Message
     const deleteMessage = async (id) => {
-        await deleteMessageFromDB(id)
-        setMessage(prev => prev.filter(msg => msg.id !== id))
+        try {
+            await deleteMessageFromDB(id);
+            setMessage((prev) => prev.filter((msg) => msg.id !== id));
+        } catch (error) {
+            console.error("Failed to delete message:", error);
+        }
     }
 
     const togglePinChat = async (userId) => {
-        setUsers(prev =>
-            prev.map(user =>
-                user.id === userId
-                    ? { ...user, isPinned: !user.isPinned }
-                    : user
-            )
-        );
+        try {
+            const user = users.find((u) => u.id === userId);
+            if (!user) return;
+            const updatedPin = !user.isPinned;
+            await updateUserProfile(userId, { isPinned: updatedPin });
+            setUsers((prev) =>
+                prev.map((u) =>
+                    u.id === userId ? { ...u, isPinned: updatedPin } : u
+                )
+            );
+        } catch (error) {
+            console.error("Failed to pin chat:", error);
+        }
     };
 
     return (

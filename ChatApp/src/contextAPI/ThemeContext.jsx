@@ -2,19 +2,33 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const ThemeContext = createContext();
 
+const getInitialTheme = () => {
+    try {
+        const savedTheme = localStorage.getItem("theme");
+        return savedTheme === "light" || savedTheme === "dark"
+            ? savedTheme
+            : "dark";
+    } catch (error) {
+        console.error("Failed to read theme from localStorage:", error);
+        return "dark";
+    }
+};
+
 export const ThemeProvider = ({ children }) => {
-    const [theme, setTheme] = useState(
-        localStorage.getItem("theme") || "dark"
-    );
+    const [theme, setTheme] = useState(getInitialTheme);
 
     useEffect(() => {
-        const root = document.documentElement;
-        if (theme === "dark") {
-            root.classList.add("dark");
-        } else {
-            root.classList.remove("dark");
+        try {
+            const root = document.documentElement;
+            if (theme === "dark") {
+                root.classList.add("dark");
+            } else {
+                root.classList.remove("dark");
+            }
+            localStorage.setItem("theme", theme);
+        } catch (error) {
+            console.error("Failed to apply theme:", error);
         }
-        localStorage.setItem("theme", theme);
     }, [theme]);
 
     const toggleTheme = () => {
