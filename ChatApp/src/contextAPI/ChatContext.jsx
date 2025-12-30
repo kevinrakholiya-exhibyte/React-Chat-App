@@ -40,7 +40,7 @@ export const ChatProvider = ({ children }) => {
         loadMessages();
         loadUsers();
     }, []);
-
+    // add Message
     const addMessage = async (text) => {
         const newMessage = {
             chatId: activeChat,
@@ -52,12 +52,16 @@ export const ChatProvider = ({ children }) => {
         const savedMessage = await addMessageToDB(newMessage);
         setMessage((prev) => [...prev, savedMessage]);
     };
-
+    // add User
     const addUser = async (user) => {
-        await addUsersToDB(user);
+        const newUser = {
+            ...user,
+            isPinned: false
+        }
+        await addUsersToDB(newUser);
         setUsers((prev) => {
-            const updatedUsers = [...prev, user];
-            setActiveChat(user.id);
+            const updatedUsers = [...prev, newUser];
+            setActiveChat(newUser.id);
             return updatedUsers;
         });
     };
@@ -88,8 +92,18 @@ export const ChatProvider = ({ children }) => {
         setMessage(prev => prev.filter(msg => msg.id !== id))
     }
 
+    const togglePinChat = async (userId) => {
+        setUsers(prev =>
+            prev.map(user =>
+                user.id === userId
+                    ? { ...user, isPinned: !user.isPinned }
+                    : user
+            )
+        );
+    };
+
     return (
-        <ChatContext.Provider value={{ users, setUsers, message, activeChat, setActiveChat, addMessage, addUser, isTyping, setIsTyping, editMessage, deleteMessage, updateUser }}>
+        <ChatContext.Provider value={{ users, setUsers, message, activeChat, setActiveChat, addMessage, addUser, isTyping, setIsTyping, editMessage, deleteMessage, updateUser, togglePinChat }}>
             {children}
         </ChatContext.Provider>
     )

@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
-import { Pencil, Search } from 'lucide-react';
+import { Pencil, Pin, Search } from 'lucide-react';
 import EditUserModel from './EditUserModel';
+import { useChat } from '../contextAPI/ChatContext';
 
-const ConversationItem = ({ active, name, avatar, onClick, message, time, userId }) => {
+const ConversationItem = ({ active, name, avatar, onClick, message, time, userId, isPinned }) => {
     const [openEdit, setOpenEdit] = useState(false)
+
+    const { togglePinChat } = useChat()
 
     const formatTime = (timestamp) => {
         if (!timestamp) return "";
@@ -43,18 +46,37 @@ const ConversationItem = ({ active, name, avatar, onClick, message, time, userId
                         {name}
                     </h4>
                     <div className="text-xs text-gray-400 dark:text-gray-300">{time ? formatTime(time) : ""}</div>
-                    <Pencil
-                        size={18}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setOpenEdit(true);
-                        }}
-                        className="ml-2 cursor-pointer text-gray-400 hover:text-indigo-500"/>
-
                 </div>
                 <div className="text-sm text-gray-500 dark:text-gray-400  w-40 truncate">
                     {message}
                 </div>
+            </div>
+            <div className="flex items-center gap-2">
+                {/* Pin */}
+                <button
+                    title={isPinned ? 'Unpin chat' : 'Pin chat'}
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        togglePinChat(userId)
+                    }}
+                    className={`p-2 rounded-full transition
+                     ${isPinned
+                            ? 'bg-yellow-100 text-yellow-600'
+                            : 'text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'}`}>
+                    <Pin
+                        size={16}
+                        className={`${isPinned ? 'rotate-45' : ''} transition-transform`} />
+                </button>
+                {/* Edit */}
+                <button
+                    title="Edit user"
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        setOpenEdit(true)
+                    }}
+                    className="p-2 rounded-full text-gray-400 hover:text-indigo-500 hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                    <Pencil size={16} />
+                </button>
             </div>
             {openEdit && (
                 <EditUserModel user={{ id: userId, name, avatar }}
