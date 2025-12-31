@@ -27,7 +27,7 @@ const ConversationItem = ({ active, name, avatar, onClick, message, time, userId
     return (
         <div
             onClick={onClick}
-            className={`flex items-center gap-3 p-3 mx-2 my-1 rounded-xl cursor-pointer transition-all duration-200
+            className={`flex items-center gap-3 p-3 mx-2 my-1 rounded-xl cursor-pointer transition-all duration-200 ease-in-out
         ${active ? "bg-gray-200 dark:bg-gray-600" : "bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"}`}>
             {/* Avatar */}
             <img
@@ -59,13 +59,13 @@ const ConversationItem = ({ active, name, avatar, onClick, message, time, userId
                         e.stopPropagation()
                         togglePinChat(userId)
                     }}
-                    className={`p-2 rounded-full transition
+                    className={`p-2 rounded-full transition-all duration-300 ease-in-out
                      ${isPinned
-                            ? 'bg-yellow-100 text-yellow-600'
+                            ? 'bg-yellow-100 text-yellow-600 scale-110'
                             : 'text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'}`}>
                     <Pin
                         size={16}
-                        className={`${isPinned ? 'rotate-45' : ''} transition-transform`} />
+                        className={`transition-transform duration-300 ease-in-out ${isPinned ? 'rotate-45' : 'rotate-0'}`} />
                 </button>
                 {/* Edit */}
                 <button
