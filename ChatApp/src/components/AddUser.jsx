@@ -14,6 +14,8 @@ const AddUser = () => {
         email: "",
         avatar: "",
     })
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(null)
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
@@ -44,6 +46,7 @@ const AddUser = () => {
             online: true,
         };
         try {
+            setError(null);
             setLoading(true);
             await addUser(newUser);
             navigate("/chats");
@@ -57,7 +60,7 @@ const AddUser = () => {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 p-4">
             <form onSubmit={handleSubmit}
-                className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-5">
+                className="w-full max-w-lg bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 space-y-6">
                 {/* Header */}
                 <div className="text-center">
                     <UserPlus2 className="w-10 h-10 mx-auto text-indigo-500" />
@@ -69,63 +72,103 @@ const AddUser = () => {
                     </p>
                 </div>
 
-                {/* Name */}
-                <div>
-                    <label className="text-sm font-medium dark:text-gray-200">
-                        Name
-                    </label>
-                    <div className="flex items-center gap-2 mt-1">
-                        <UserPlus className="w-4 h-4 text-gray-400" />
-                        <input
-                            name="name"
-                            value={form.name}
-                            onChange={handleChange}
-                            placeholder="Full name"
-                            className="w-full p-2 rounded-lg border dark:bg-gray-700 dark:text-white"
-                        />
+                <div className="md:grid md:grid-cols-3 md:gap-6">
+                    <div className="md:col-span-2 space-y-4">
+                        {/* Name */}
+                        <div>
+                            <label htmlFor="name" className="text-sm font-medium dark:text-gray-200 block">
+                                Name
+                            </label>
+                            <div className="flex items-center gap-3 mt-2">
+                                <UserPlus className="w-5 h-5 text-gray-400" />
+                                <input
+                                    id="name"
+                                    name="name"
+                                    value={form.name}
+                                    onChange={handleChange}
+                                    placeholder="Full name"
+                                    required
+                                    className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Email */}
+                        <div>
+                            <label htmlFor="email" className="text-sm font-medium dark:text-gray-200 block">
+                                Email
+                            </label>
+                            <div className="flex items-center gap-3 mt-2">
+                                <Mail className="w-5 h-5 text-gray-400" />
+                                <input
+                                    id="email"
+                                    name="email"
+                                    type="email"
+                                    value={form.email}
+                                    onChange={handleChange}
+                                    placeholder="user@email.com"
+                                    className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Avatar URL */}
+                        <div>
+                            <label htmlFor="avatar" className="text-sm font-medium dark:text-gray-200 block">
+                                Avatar URL (optional)
+                            </label>
+                            <div className="flex items-center gap-3 mt-2">
+                                <Image className="w-5 h-5 text-gray-400" />
+                                <input
+                                    id="avatar"
+                                    name="avatar"
+                                    value={form.avatar}
+                                    onChange={handleChange}
+                                    placeholder="https://image..."
+                                    className="w-full p-3 rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Avatar preview column */}
+                    <div className="md:col-span-1 flex items-start md:items-center justify-center">
+                        <div className="w-40 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                            <div className="w-28 h-28 rounded-full overflow-hidden mx-auto">
+                                <img
+                                    src={form.avatar || 'https://cdn.vectorstock.com/i/1000v/66/13/default-avatar-profile-icon-social-media-user-vector-49816613.jpg'}
+                                    alt="avatar preview"
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                            <h4 className="mt-3 text-center text-sm font-medium dark:text-white">{form.name || 'No name'}</h4>
+                            <p className="text-xs text-center text-gray-500 dark:text-gray-400">Avatar Preview</p>
+                        </div>
                     </div>
                 </div>
 
-                {/* Email */}
-                <div>
-                    <label className="text-sm font-medium dark:text-gray-200">
-                        Email
-                    </label>
-                    <div className="flex items-center gap-2 mt-1">
-                        <Mail className="w-4 h-4 text-gray-400" />
-                        <input
-                            name="email"
-                            type="email"
-                            value={form.email}
-                            onChange={handleChange}
-                            placeholder="user@email.com"
-                            className="w-full p-2 rounded-lg border dark:bg-gray-700 dark:text-white"
-                        />
+                {/* Error */}
+                {error && (
+                    <div className="text-sm text-red-600 dark:text-red-400 text-center">
+                        {error}
                     </div>
-                </div>
+                )}
 
-                {/* Avatar URL */}
-                <div>
-                    <label className="text-sm font-medium dark:text-gray-200">
-                        Avatar URL (optional)
-                    </label>
-                    <div className="flex items-center gap-2 mt-1">
-                        <Image className="w-4 h-4 text-gray-400" />
-                        <input
-                            name="avatar"
-                            value={form.avatar}
-                            onChange={handleChange}
-                            placeholder="https://image..."
-                            className="w-full p-2 rounded-lg border dark:bg-gray-700 dark:text-white"
-                        />
-                    </div>
+                {/* Buttons */}
+                <div className="flex gap-3">
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className={`flex-1 flex items-center justify-center gap-2 bg-indigo-500 text-white py-2 rounded-lg hover:bg-indigo-600 disabled:opacity-60 ${loading ? 'cursor-wait' : ''}`}>
+                        {loading ? 'Adding...' : 'Add User'}
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => navigate('/chats')}
+                        className="flex-0 px-4 py-2 border rounded-lg bg-white dark:bg-gray-700 dark:text-white border-gray-200 hover:bg-gray-50">
+                        Cancel
+                    </button>
                 </div>
-
-                {/* Button */}
-                <button
-                    className="w-full bg-indigo-500 text-white py-2 rounded-lg hover:bg-indigo-600 disabled:opacity-50">
-                    Add User
-                </button>
             </form>
         </div>
     )
