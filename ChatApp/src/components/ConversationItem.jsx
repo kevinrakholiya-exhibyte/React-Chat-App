@@ -87,4 +87,4 @@ const ConversationItem = ({ active, name, avatar, onClick, message, time, userId
     )
 }
 
-export default ConversationItem
+export default React.memo(ConversationItem)

@@ -108,4 +108,4 @@ const Messages = ({ searchText }) => {
     )
 }
 
-export default Messages
+export default React.memo(Messages)
