@@ -1,23 +1,28 @@
 import { Routes, Route } from 'react-router-dom'
 import './App.css'
-import Chat from './components/Chat'
 import { ChatProvider } from './contextAPI/ChatContext'
-import AddUser from './components/AddUser'
-import Home from './components/Home'
 import { ThemeProvider } from './contextAPI/ThemeContext'
-import Settings from './components/Settings'
+import { lazy, Suspense } from 'react'
+import LoadingSkeleton from './components/LoadingSkeleton'
+
+const Home = lazy(() => import('./components/Home'))
+const Chat = lazy(() => import('./components/Chat'))
+const AddUser = lazy(() => import('./components/AddUser'))
+const Settings = lazy(() => import('./components/Settings'))
 
 function App() {
 
   return (
     <ChatProvider>
       <ThemeProvider>
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/chats' element={<Chat />} />
-          <Route path='/user' element={<AddUser />} />
-          <Route path='/setting' element={<Settings />} />
-        </Routes>
+        <Suspense fallback={<LoadingSkeleton />}>
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/chats' element={<Chat />} />
+            <Route path='/user' element={<AddUser />} />
+            <Route path='/setting' element={<Settings />} />
+          </Routes>
+        </Suspense>
       </ThemeProvider>
     </ChatProvider>
   )

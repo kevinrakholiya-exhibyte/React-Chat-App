@@ -60,6 +60,21 @@ const EditUserModel = ({ user, onClose }) => {
                             className="w-full p-2 rounded-lg border dark:bg-gray-700 dark:text-white"/>
                     </div>
 
+                        {/* Avatar Preview */}
+                        <div className="flex justify-center mt-2">
+                            <div className="w-40 p-2 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                                <div className="w-24 h-24 rounded-full overflow-hidden mx-auto">
+                                    <img
+                                        src={form.avatar || 'https://cdn.vectorstock.com/i/1000v/66/13/default-avatar-profile-icon-social-media-user-vector-49816613.jpg'}
+                                        alt="avatar preview"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                                <h4 className="mt-2 text-center text-sm font-medium dark:text-white">{form.name || 'No name'}</h4>
+                                <p className="text-xs text-center text-gray-500 dark:text-gray-400">Avatar Preview</p>
+                            </div>
+                        </div>
+
                     {/* Buttons */}
                     <div className="flex justify-end gap-2 pt-2">
                         <button
