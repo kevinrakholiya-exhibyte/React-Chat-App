@@ -1,5 +1,4 @@
-import { ArrowRight, Menu, MessageCircle, Shield, Users, X, Zap } from 'lucide-react'
-import React from 'react'
+import { ArrowRight} from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 const Home = () => {
