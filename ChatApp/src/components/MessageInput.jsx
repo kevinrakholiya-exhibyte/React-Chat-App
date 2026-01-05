@@ -8,8 +8,6 @@ const MessageInput = ({ isChatActive }) => {
     const typingTimeoutRef = useRef(null);
 
     const isDisabled = !isChatActive || !text.trim();
-    console.log("isChatActive:", isChatActive);
-
     const handleChange = (e) => {
         if (!isChatActive) return;
         const value = e.target.value
