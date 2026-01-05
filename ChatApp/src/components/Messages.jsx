@@ -4,7 +4,7 @@ import { Check, Delete, Pencil, Trash2, TrashIcon } from 'lucide-react';
 
 const Messages = ({ searchText }) => {
 
-    const { message, activeChat, users, isTyping, editMessage, deleteMessage } = useChat();
+    const { message, activeChat, users, isTyping, editMessage, deleteMessage, currentUserId } = useChat();
 
     const bottomRef = useRef(null);
 
@@ -76,31 +76,34 @@ const Messages = ({ searchText }) => {
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
                 {filteredMessages
                     .filter((msg) => msg.chatId === activeChat)
-                    .map((msg, id) => (
-                        <div key={id} className={`flex group ${msg.sender === "me" ? "justify-end" : "justify-start"}`}>
-                            <div className={`relative max-w-xs px-4 py-2 rounded-2xl text-sm shadow ${msg.sender === "me" ? "bg-purple-600 text-white rounded-br-none" : "bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-bl-none"}`}>
-                                {msg.text}
-                                <div className="flex items-center justify-end gap-1 text-[10px] opacity-70 mt-1">
-                                    <span>{formatTime(msg.time)}</span>
-                                    {msg.sender === "me" && msg.status === "sent" && (
-                                        <Check size={12} className="translate-y-[1px]" />
+                    .map((msg) => {
+                        const isMine = Number(msg.authorId) === Number(currentUserId);
+                        return (
+                            <div key={msg.id} className={`flex group ${isMine ? "justify-end" : "justify-start"}`}>
+                                <div className={`relative max-w-xs px-4 py-2 rounded-2xl text-sm shadow ${isMine ? "bg-purple-600 text-white rounded-br-none" : "bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-bl-none"}`}>
+                                    {msg.text}
+                                    <div className="flex items-center justify-end gap-1 text-[10px] opacity-70 mt-1">
+                                        <span>{formatTime(msg.time)}</span>
+                                        {isMine && msg.status === "sent" && (
+                                            <Check size={12} className="translate-y-[1px]" />
+                                        )}
+                                    </div>
+                                    {isMine && (
+                                        <div className="absolute -top-2 -right-2 hidden group-hover:flex gap-1 bg-white dark:bg-gray-800 shadow rounded-full p-1">
+                                            <button onClick={() => handleEdit(msg)}
+                                                className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
+                                                <Pencil size={12} />
+                                            </button>
+                                            <button onClick={() => handleDelete(msg.id)}
+                                                className="p-1 hover:bg-red-100 text-red-500 rounded">
+                                                <Trash2 size={12} />
+                                            </button>
+                                        </div>
                                     )}
                                 </div>
-                                {msg.sender === "me" && (
-                                    <div className="absolute -top-2 -right-2 hidden group-hover:flex gap-1 bg-white dark:bg-gray-800 shadow rounded-full p-1">
-                                        <button onClick={() => handleEdit(msg)}
-                                            className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
-                                            <Pencil size={12} />
-                                        </button>
-                                        <button onClick={() => handleDelete(msg.id)}
-                                            className="p-1 hover:bg-red-100 text-red-500 rounded">
-                                            <Trash2 size={12} />
-                                        </button>
-                                    </div>
-                                )}
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 <div ref={bottomRef} />
             </div>
         </div>
