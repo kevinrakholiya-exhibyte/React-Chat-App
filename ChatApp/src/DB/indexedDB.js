@@ -156,55 +156,23 @@ export const deleteMessageFromDB = async (messageId) => {
     }
 }
 
-// Get messages with id greater than lastId 
-export const getMessagesLastId = async (lastId = 0) => {
+export const getMessagesLastId = async (lastId) => {
     try {
         const db = await openDB();
-        const store = db.transaction(MESSAGE_STORE, "readonly")
-            .objectStore(MESSAGE_STORE);
+        const store = db.transaction(MESSAGE_STORE, "readonly").objectStore(MESSAGE_STORE);
 
         return new Promise((resolve, reject) => {
             const request = store.getAll();
-
             request.onsuccess = () => {
-                const messages = request.result || [];
-
-                const newMessages = messages
-                    .filter(msg => msg.id > lastId)
-                    .sort((a, b) => a.id - b.id);
-
+                const newMessages = request.result.filter(
+                    (msg) => msg.id > lastId
+                );
                 resolve(newMessages);
             };
-
             request.onerror = () => reject(request.error);
         });
     } catch (err) {
-        console.error("getMessagesSinceId error", err);
+        console.error("getMessagesLastId error", err);
         return [];
     }
-};
-
-export const checkNewMessages = (onNewMessages, interval = 400) => {
-    let lastId = 0;
-    let timer;
-
-    const initLastId = async () => {
-        const messages = await getMessagesFromDB();
-        if (messages.length) {
-            lastId = messages[messages.length - 1].id;
-        }
-    };
-    const poll = async () => {
-        const newMessages = await getMessagesSinceId(lastId);
-
-        if (newMessages.length) {
-            lastId = newMessages[newMessages.length - 1].id;
-            onNewMessages(newMessages);
-        }
-    };
-    initLastId().then(() => {
-        poll();
-        timer = setInterval(poll, interval);
-    });
-    return () => clearInterval(timer);
 };

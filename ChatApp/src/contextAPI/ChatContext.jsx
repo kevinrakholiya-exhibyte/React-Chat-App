@@ -1,5 +1,5 @@
-import { createContext, useContext, useEffect, useReducer, useState } from "react";
-import { addMessageToDB, addUsersToDB, deleteMessageFromDB, getMessagesFromDB, getUsersFromDB, updateMessageInDB, updateUserProfile } from "../DB/indexedDB";
+import { createContext, useContext, useEffect, useReducer, useRef, useState } from "react";
+import { addMessageToDB, addUsersToDB, deleteMessageFromDB, getMessagesFromDB, getMessagesLastId, getUsersFromDB, updateMessageInDB, updateUserProfile } from "../DB/indexedDB";
 import chatReducer from "../Reducer/chatReducer";
 
 const ChatContext = createContext()
@@ -13,6 +13,7 @@ export const ChatProvider = ({ children }) => {
         message: []
     })
 
+    const lastMessagesId = useRef(0)
     // Load Message from IndexedDB on app render
     const loadMessages = async () => {
         try {
@@ -22,11 +23,32 @@ export const ChatProvider = ({ children }) => {
                 status: msg.status || "sent",
             }));
             setMessage(messages);
+            if (messages.length > 0) {
+                lastMessagesId.current = messages[messages.length - 1].id
+            }
         } catch (error) {
             console.error("Failed to load messages:", error);
             setMessage([]);
         }
     };
+
+    useEffect(() => {
+        const POLL_INTERVAL = 400
+        const pollMessages = async () => {
+            if (!activeChat) return
+            const newMessages = await getMessagesLastId(
+                lastMessagesId.current
+            )
+            if (newMessages.length > 0) {
+                lastMessagesId.current = newMessages[newMessages.length - 1].id
+                setMessage((prev) => [...prev, ...newMessages])
+            }
+        }
+        const interval = setInterval(pollMessages, POLL_INTERVAL)
+        return () => clearInterval(interval)
+    }, [activeChat])
+
+
     // Load Users from IndexedDB on app render
     const loadUsers = async () => {
         try {
@@ -51,17 +73,29 @@ export const ChatProvider = ({ children }) => {
         loadUsers();
     }, []);
 
+    const getTabUserId = () => {
+        let id = sessionStorage.getItem("tabUserId");
+        if (!id) {
+            id = "user_" + Math.random().toString(36).slice(2);
+            sessionStorage.setItem("tabUserId", id);
+        }
+        return id;
+    };
+
+    const tabUserId = getTabUserId();
+
     // add Message
     const addMessage = async (text) => {
         const newMessage = {
             chatId: activeChat,
             text,
-            sender: "me",
+            sender: tabUserId,
             time: Date.now(),
             status: "sent"
         };
         const savedMessage = await addMessageToDB(newMessage);
         setMessage((prev) => [...prev, savedMessage]);
+        lastMessagesId.current = savedMessage.id;
     };
     // add User
     const addUser = async (user) => {
