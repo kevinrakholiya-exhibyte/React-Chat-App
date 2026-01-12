@@ -165,7 +165,7 @@ const AddUser = () => {
                     <button
                         type="button"
                         onClick={() => navigate('/chats')}
-                        className="flex-0 px-4 py-2 border rounded-lg bg-white dark:bg-gray-700 dark:text-white border-gray-200 hover:bg-gray-50">
+                        className="flex-0 px-4 py-2 border rounded-lg bg-white dark:bg-gray-700 dark:text-white border-gray-200 hover:bg-gray-500">
                         Cancel
                     </button>
                 </div>

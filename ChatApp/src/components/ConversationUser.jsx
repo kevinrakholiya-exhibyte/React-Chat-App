@@ -3,7 +3,7 @@ import { Pencil, Pin, Search } from 'lucide-react';
 import EditUserModel from './EditUserModel';
 import { useChat } from '../contextAPI/ChatContext';
 
-const ConversationItem = ({ active, name, avatar, onClick, message, time, userId, isPinned }) => {
+const ConversationUser = ({ active, name, avatar, onClick, message, time, userId, isPinned }) => {
     const [openEdit, setOpenEdit] = useState(false)
 
     const { togglePinChat } = useChat()
@@ -65,7 +65,7 @@ const ConversationItem = ({ active, name, avatar, onClick, message, time, userId
                             : 'text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'}`}>
                     <Pin
                         size={16}
-                        className={`transition-transform duration-300 ease-in-out ${isPinned ? 'rotate-45' : 'rotate-0'}`} />
+                        className={`transition-transform duration-300 ease-in-out cursor-pointer ${isPinned ? 'rotate-45' : 'rotate-0'}`} />
                 </button>
                 {/* Edit */}
                 <button
@@ -87,4 +87,4 @@ const ConversationItem = ({ active, name, avatar, onClick, message, time, userId
     )
 }
 
-export default React.memo(ConversationItem)
+export default React.memo(ConversationUser)

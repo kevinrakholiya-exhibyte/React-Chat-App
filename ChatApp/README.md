@@ -47,7 +47,7 @@ src/
 │   ├── AddUser.jsx
 │   ├── Chat.jsx
 │   ├── Conversation.jsx
-|   ├── ConversationItem.jsx
+|   ├── ConversationUser.jsx
 |   ├── EditUserModel.jsx 
 │   ├── Home.jsx
 |   ├── LoadingSkeleton.jsx
@@ -105,10 +105,7 @@ npm install
 npm run dev
 ```
 
-# Future Enhancements
-- Implement Real Time Messaging
+# Future Enhancements 
 - Message notifications
-- Pin Chat
 - Unread Message Count
 - File & Image Messages
-- Dark / Light Mode Toggle

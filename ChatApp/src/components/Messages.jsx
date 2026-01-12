@@ -5,8 +5,8 @@ import { Check, Delete, Pencil, Trash2, TrashIcon } from 'lucide-react';
 const Messages = ({ searchText }) => {
 
     const { message, activeChat, users, isTyping, editMessage, deleteMessage, currentUserId } = useChat();
-
     const bottomRef = useRef(null);
+    const tabUserId = sessionStorage.getItem("tabUserId");
 
     // Auto scroll to bottom on new message
     useEffect(() => {
@@ -77,18 +77,18 @@ const Messages = ({ searchText }) => {
                 {filteredMessages
                     .filter((msg) => msg.chatId === activeChat)
                     .map((msg) => {
-                        const isMine = Number(msg.authorId) === Number(currentUserId);
+                        const isSender = msg.sender === tabUserId;
                         return (
-                            <div key={msg.id} className={`flex group ${isMine ? "justify-end" : "justify-start"}`}>
-                                <div className={`relative max-w-xs px-4 py-2 rounded-2xl text-sm shadow ${isMine ? "bg-purple-600 text-white rounded-br-none" : "bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-bl-none"}`}>
+                            <div key={msg.id} className={`flex group ${isSender ? "justify-end" : "justify-start"}`}>
+                                <div className={`relative max-w-xs px-4 py-2 rounded-2xl text-sm shadow ${isSender ? "bg-purple-600 text-white rounded-br-none" : "bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-bl-none"}`}>
                                     {msg.text}
                                     <div className="flex items-center justify-end gap-1 text-[10px] opacity-70 mt-1">
                                         <span>{formatTime(msg.time)}</span>
-                                        {isMine && msg.status === "sent" && (
+                                        {isSender && msg.status === "sent" && (
                                             <Check size={12} className="translate-y-[1px]" />
                                         )}
                                     </div>
-                                    {isMine && (
+                                    {isSender && (
                                         <div className="absolute -top-2 -right-2 hidden group-hover:flex gap-1 bg-white dark:bg-gray-800 shadow rounded-full p-1">
                                             <button onClick={() => handleEdit(msg)}
                                                 className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">

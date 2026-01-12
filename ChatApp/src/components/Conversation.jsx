@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import ConversationItem from './ConversationItem'
+import ConversationUser from './ConversationUser'
 import { useChat } from '../contextAPI/ChatContext';
 import { SearchIcon } from 'lucide-react';
 
@@ -34,7 +34,7 @@ const Conversation = () => {
                     .slice(-1)[0];
 
                 return (
-                    <ConversationItem
+                    <ConversationUser
                         key={user.id}
                         name={user.name}
                         userId={user.id}
